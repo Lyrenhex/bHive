@@ -48,9 +48,6 @@ radio.on()
 #Configuring the radio for group 1.
 radio.config(group=1)
 
-
-
-
 #Parses errors sent through.
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
@@ -84,16 +81,6 @@ def parseReceived(input):
     #Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
-
-def loop():
-    number = getNum()
-    #give each microbit the same number
-    
-    while len(responses) != len(clients):
-        pass
-
-    primes[nextNum - 1] = True # WRONG
-    loop()
 
 #Constantly sending worker_request.
 while True:
