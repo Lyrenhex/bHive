@@ -88,16 +88,13 @@ while True:
     # if not empty
     if recv is not None:
         # parse the radio data into something useful
-        msg = str(recv)
-        params = msg.split(" ")
+        params = str(recv).split(" ")
                 
-        if params[0] == "ping": # ping check -- we're available -- pong!
-            radio.send("pong " + macAddr)
+        if params[0] == "ping": # queen looking for available workers
+            radio.send("pong " + macAddr) # let them know we're free and our unique ID for future interaction
         # check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
-                display.show(len(params[2:]))
-                
                 # compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
