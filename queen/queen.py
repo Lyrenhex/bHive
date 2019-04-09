@@ -6,40 +6,41 @@ import os
 ## PRIME DEMO FUNCTIONS ##
 ##########################
 
-#Dictionary of numbers and whether or not they have been found
-primes = {}
-#Next number to be found
+# List of prime numbers
+# Assume all numbers are prime, we'll remove the ones which aren't
+primes = [i for i in range(100)]
+verifiedPrimes = [2, 3, 5]
+# Next number to check
 nextNum = 0
-#Give a new number to be found
+testingPrimes = False
+
+# Generate next number
 def getNum():
     nextNum += 1
-    return(nextNum - 1)
+    return nextNum - 1
 
 #Split the list of primes into a list of a given number of lists
 def splitPrimes(number):
-    #Get all prime numbers
-    primesTrue = [n for n in primes.keys() if primes[n]]
-
-    #Get average length of the list
-    avg = len(primesTrue) / float(number)
-    #Start of each slice
+    # Get average length of the list of primes
+    avg = len(verifiedPrimes) / float(number)
+    # Start of each slice
     start = 0.0
     output = []
 
-    #While you still can get more numbers
-    while start < len(primesTrue):
-        output.append(primesTrue[int(start):int(start + avg)])
+    # While you still can get more numbers
+    while start < len(verifiedPrimes):
+        output.append(verifiedPrimes[int(start):int(start + avg)])
         start += avg
 
-    return(output)
+    return output
 
-primes = {2:True, 3:True, 4:False, 5:True}
 splitPrimes(2)
 
 ### END OF PRIME DEMO FUNCTIONS ##
 
 #List of IDs of all clients
 clients = []
+clientsResponded = []
 
 #Enabling the display and radio.
 display.on()
@@ -54,6 +55,10 @@ def handleError(code, message):
     sleep(2000)
     display.scroll(message)
 
+def releaseAllClients():
+    for client in clients:
+        radio.send(client + " release")
+
 #Parsing received parameters.
 def parseReceived(input):
     #Extracting parameters from message.
@@ -64,10 +69,13 @@ def parseReceived(input):
         #Adding ID, if not already in the list.
         if params[1] not in clients:
             clients.append(params[1])
+            radio.send(params[1] + " hold")
 
     elif params[0] == "prime":
-        #Setting a prime to true if it is prime and false if it is not
-        results[str(params[1])] = params[2]
+        clientsResponded.append(params[0])
+        # If prime, remove from primes list
+        if (not params[2]) and (params[1] in primes):
+            primes.remove(params[1])
 
     if params[0] == "sum":
         #Sum response from a client.
@@ -89,10 +97,26 @@ while True:
         radio.send("ping")
 
     if button_b.is_pressed():
-        if len(clients)>0:
-            #clientToSend = clients.copy()[0]
-            #radio.send(clients[0] + " sum 2 3")
-            loop()
+        if len(clients) > 0:
+            testingPrimes = True
+            clientsResponded = clients
+    
+    if testingPrimes:
+        # do not send out new tests until all clients have responded
+        # it's best to keep this synchronised
+        if len(clientsResponded) == len(clients):
+            clientsResponded = []
+            checkPrime = getNum()
+            if checkPrime <= max(primes):
+                factorPrimeLists = splitPrimes(len(clients))
+                i = 0
+                for client in clients:
+                    radio.send(client + " testPrime " + str(checkPrime) + " " + " ".join(factorPrimeLists[i]))
+                    i += 1
+            else:
+                testingPrimes = False
+                releaseAllClients()
+                display.scroll(" ".join(primes))
 
     #Parsing any responses.
     received = radio.receive()
