@@ -2,9 +2,9 @@ from microbit import *
 import radio
 import os
 
-
 #Dictionary of numbers and whether or not they have been found
 primes = {}
+
 #List of IDs of all clients
 clients = []
 #Next number to be found
@@ -16,7 +16,6 @@ radio.on()
 
 #Configuring the radio for group 1.
 radio.config(group=1)
-
 #Give a new number to be found
 def getNum():
     nextNum += 1
