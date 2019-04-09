@@ -90,7 +90,8 @@ while True:
         # check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] not in RESERVED_FUNCS):
-                response = locals()[params[1]](params[2:])
+                display.show(len(params[2:]))
+                response = locals()[params[1]](*params[2:])
                 if response is not None:
                     sendResponse(params[1], response)
         endProcess()
