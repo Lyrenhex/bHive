@@ -2,6 +2,10 @@ from microbit import *
 import radio
 import os
 
+##########################
+## PRIME DEMO FUNCTIONS ##
+##########################
+
 #Dictionary of numbers and whether or not they have been found
 primes = {}
 #Next number to be found
@@ -10,16 +14,6 @@ nextNum = 1
 def getNum():
     nextNum += 1
     return(nextNum - 1)
-
-#List of IDs of all clients
-clients = []
-
-#Enabling the display and radio.
-display.on()
-radio.on()
-
-#Configuring the radio for group 1.
-radio.config(group=1)
 
 #Split the list of primes into a list of a given number of lists
 def splitPrimes(number):
@@ -41,6 +35,20 @@ def splitPrimes(number):
 
 primes = {2:True, 3:True, 4:False, 5:True}
 splitPrimes(2)
+
+### END OF PRIME DEMO FUNCTIONS ##
+
+#List of IDs of all clients
+clients = []
+
+#Enabling the display and radio.
+display.on()
+radio.on()
+
+#Configuring the radio for group 1.
+radio.config(group=1)
+
+
 
 
 #Parses errors sent through.
