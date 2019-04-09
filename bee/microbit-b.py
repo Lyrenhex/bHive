@@ -10,6 +10,30 @@ from microbit import *
 import machine
 import radio
 
+########################
+## POLLEN INTERPRETER ##
+########################
+
+# Characters which are to be classed as individual tokens.
+iTokenCharacters = ["+", "-", "*", "/", "(", ")", "[", "]", ";"]
+# Characters which are to be skipped when parsing.
+skipCharacters = [" "]
+
+# Parses a given pollen script as a string.
+def parsePollen(script):
+    # Split the string up into tokens.
+    tokens = []
+    token = ""
+    for char in script:
+        # Check against token characters here. If individual token, add and reset.
+        if char in iTokenCharacters:
+            tokens.append([token, char])
+            token = ""
+        if char not in skipCharacters:
+            token += char
+
+#### END POLLEN INTERPRETER ####
+
 # define constants
 GROUP = 1
 ALLOWED_FUNCS = [
