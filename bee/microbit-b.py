@@ -12,11 +12,10 @@ import radio
 
 # define constants
 GROUP = 1
-RESERVED_FUNCS = [
-    "startProcess",
-    "endProcess",
-    "sendResponse",
-    "sendError"
+ALLOWED_FUNCS = [
+    "sum",
+    "findPrime",
+    "addPrime"
 ]
 
 # set up mac address-based unique id
@@ -89,7 +88,7 @@ while True:
             radio.send("pong " + macAddr)
         # check that the instruction is intended for us
         elif params[0] == macAddr:
-            if (params[1] in locals()) and (params[1] not in RESERVED_FUNCS):
+            if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
                 display.show(len(params[2:]))
                 response = locals()[params[1]](*params[2:])
                 if response is not None:
