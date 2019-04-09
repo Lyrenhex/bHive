@@ -14,8 +14,7 @@ import radio
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
-    "testPrime",
-    "addPrime"
+    "testPrime"
 ]
 
 # set up mac address-based unique id
@@ -74,22 +73,13 @@ def sum(*args):
 # If any Prime is a factor, then the number is not
 # a Prime number, so we return False. Else, True.
 def testPrime(*testNums):
-    if len(testNums) == 1:
-        testNum = testNums[0]
-        for prime in primeNumList:
-            # if mod prime = 0, we aren't a Prime
-            if (testNum % prime) == 0:
-                return False
-        return True
-    else:
-        sendError(1, "Can only test Primality of 1 int at a time.")
-        return None
-
-# Runs a check for Primality using testPrime (let's be certain!)
-# and if Prime, append to the primeNumList.
-def addPrime(newPrime):
-    if findPrime(newPrime):
-        primeNumList.append(newPrime)
+    testNum = testNums[0]
+    primeNumList = testNums[1:]
+    for prime in primeNumList:
+        # if mod prime = 0, we aren't a Prime
+        if (testNum % prime) == 0:
+            return False
+    return True
 
 # Main loop
 while True:
