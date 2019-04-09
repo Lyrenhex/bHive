@@ -12,7 +12,8 @@ import radio
 # define constants
 GROUP = 1
 
-macAddr = str(machine.unique_id())
+macAddr = machine.unique_id()
+macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
 
 radio.on()
 radio.config(group=GROUP)
@@ -30,5 +31,6 @@ while True:
         params = msg.split(" ")
         if params[0] == "ping": # ping check -- we're available -- pong!
             radio.send("pong " + macAddr)
-        elif params[0] == "sum":
-            display.scroll(sum(params[1], params[2]))
+        elif params[1] == "sum":
+            if params[0] == macAddr:
+                display.scroll(sum(params[2], params[3]))
