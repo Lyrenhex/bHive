@@ -5,10 +5,9 @@ import os
 <<<<<<< HEAD
 #Dictionary of numbers and whether or not they have been found
 primes = {}
-#List of IDs of all clients
 =======
-primes = []
 >>>>>>> origin/server
+#List of IDs of all clients
 clients = []
 #Next number to be found
 nextNum = 1
