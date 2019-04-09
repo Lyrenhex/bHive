@@ -6,6 +6,7 @@ Response: "ERROR"|"SUCCESS" respVal
 """
 
 from microbit import *
+import machine
 import radio
 
 # define constants
@@ -25,5 +26,7 @@ while True:
     if recv is not None:
         msg = str(recv)
         params = msg.split(" ")
-        if params[0] == "sum":
+        if params[0] == "ping": # ping check -- we're available -- pong!
+            radio.send("pong", machine.unique_id())
+        elif params[0] == "sum":
             display.scroll(sum(params[1], params[2]))
