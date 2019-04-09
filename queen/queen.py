@@ -21,6 +21,28 @@ radio.on()
 #Configuring the radio for group 1.
 radio.config(group=1)
 
+#Split the list of primes into a list of a given number of lists
+def splitPrimes(number):
+    #Get all prime numbers
+    primesTrue = [n for n in primes.keys() if primes[n]]
+
+    #Get average length of the list
+    avg = len(primesTrue) / float(number)
+    #Start of each slice
+    start = 0.0
+    output = []
+
+    #While you still can get more numbers
+    while start < len(primesTrue):
+        output.append(primesTrue[int(start):int(start + avg)])
+        start += avg
+
+    return(output)
+
+primes = {2:True, 3:True, 4:False, 5:True}
+splitPrimes(2)
+
+
 #Parses errors sent through.
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
