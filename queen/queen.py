@@ -39,10 +39,6 @@ def splitPrimes(number):
 
     return(output)
 
-primes = {2:True, 3:True, 4:False, 5:True}
-splitPrimes(2)
-
-
 #Parses errors sent through.
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
