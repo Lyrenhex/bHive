@@ -28,6 +28,10 @@ while True:
     if button_a.is_pressed():
         radio.send("ping")
 
+    if button_b.is_pressed():
+        radio.send(str(clients[0]) + " sum 2 3")
+        display.scroll(str(clients[0]) + " sum 2 3")
+
     #Parsing any responses.
     received = radio.receive()
     if received != None:
