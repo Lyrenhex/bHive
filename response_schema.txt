@@ -1,0 +1,13 @@
+Client to Server Responses:
+prime					[Unique Microbit ID]		boolean prime
+
+Server to Client Requests:
+check					[Unique Microbit ID]		int number
+
+FUNC RESPONSES
+[Procedure name]		[Unique Microbit ID]		[Space delimited list of responses]
+
+ERROR RESPONSE
+err 					[error code] 				[error message]
+
+This means "err" is a reserved keyword, DO NOT USE.
