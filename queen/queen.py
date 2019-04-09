@@ -2,13 +2,10 @@ from microbit import *
 import radio
 import os
 
-<<<<<<< HEAD
+
 #Dictionary of numbers and whether or not they have been found
 primes = {}
 #List of IDs of all clients
-=======
-primes = []
->>>>>>> origin/server
 clients = []
 #Next number to be found
 nextNum = 1
@@ -20,18 +17,16 @@ radio.on()
 #Configuring the radio for group 1.
 radio.config(group=1)
 
-<<<<<<< HEAD
 #Give a new number to be found
 def getNum():
     nextNum += 1
     return(nextNum - 1)
-=======
+
 #Parses errors sent through.
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
     sleep(2000)
     display.scroll(message)
->>>>>>> origin/server
 
 #Parsing received parameters.
 def parseReceived(input):
@@ -44,7 +39,6 @@ def parseReceived(input):
         if params[1] not in clients:
             clients.append(params[1])
 
-<<<<<<< HEAD
     elif params[0] == "prime":
         #Setting a prime to true if it is prime and false if it is not
         if params[2] not in primes.keys():
@@ -52,7 +46,7 @@ def parseReceived(input):
 
         #Check for the next prime
         radio.send(params[1] + " check " + getNum())
-=======
+
     if params[0] == "sum":
         #Sum response from a client.
         display.show(params[2])
@@ -62,7 +56,6 @@ def parseReceived(input):
     #Handle error.
     elif params[0] == "err":
         handleError(params[1], params[2])
->>>>>>> origin/server
 
 #Constantly sending worker_request.
 while True:
