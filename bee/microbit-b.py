@@ -23,7 +23,7 @@ macAddr = machine.unique_id()
 macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
 
 # init list of known Prime numbers for this worker
-primeNumList = [2,3,5]
+primeNumList = []
 
 # enable BLE and Display
 radio.on()
@@ -60,14 +60,22 @@ def sum(*args):
         sendError(1, "Insufficient number of parameters.")
         return None
 
-def findPrime(TestNum):
-    prime = 0
-    for i in range(len(primeNumList)):
-        remainder = testNum % primeNumList[i]
-        if remainder == 0:
-            prime += 1
-    return prime == 0
+# Tests testNum based on prime factorisation
+# If any Prime is a factor, then the number is not
+# a Prime number, so we return False. Else, True.
+def testPrime(*testNums):
+    if len(testNums) == 1:
+        testNum = testNums[0]
+        for prime in primeNumList:
+            # if mod prime = 0, we aren't a Prime
+            if (testNum % prime) == 0:
+                return False
+        return True
+    else:
+        sendError(1, "Can only test Primality of 1 int at a time.")
 
+# Runs a check for Primality using testPrime (let's be certain!)
+# and if Prime, append to the primeNumList.
 def addPrime(newPrime):
     if findPrime(newPrime):
         primeNumList.append(newPrime)
@@ -83,14 +91,15 @@ while True:
         params = msg.split(" ")
         
         # note that we're gonna be computing now
-        startProcess()
+        
         if params[0] == "ping": # ping check -- we're available -- pong!
             radio.send("pong " + macAddr)
         # check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
                 display.show(len(params[2:]))
+                startProcess()
                 response = locals()[params[1]](*params[2:])
+                endProcess()
                 if response is not None:
                     sendResponse(params[1], response)
-        endProcess()
