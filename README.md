@@ -6,3 +6,4 @@ A simple BLE micro:bit task distributor
 - Larry Tang
 - Damian Heaton
 - Jonathan Watson
+- George Smith
