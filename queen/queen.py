@@ -107,6 +107,9 @@ while True:
         if len(clientsResponded) == len(clients):
             clientsResponded = []
             checkPrime = getNum()
+            if (checkPrime - 1) is in primes:
+                # none of the fleet have discounted the previous prime, so we can verify it
+                verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
                 factorPrimeLists = splitPrimes(len(clients))
                 i = 0
