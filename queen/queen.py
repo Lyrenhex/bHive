@@ -4,11 +4,15 @@ import os
 
 #Dictionary of numbers and whether or not they have been found
 primes = {}
+#Next number to be found
+nextNum = 1
+#Give a new number to be found
+def getNum():
+    nextNum += 1
+    return(nextNum - 1)
 
 #List of IDs of all clients
 clients = []
-#Next number to be found
-nextNum = 1
 
 #Enabling the display and radio.
 display.on()
@@ -16,10 +20,6 @@ radio.on()
 
 #Configuring the radio for group 1.
 radio.config(group=1)
-#Give a new number to be found
-def getNum():
-    nextNum += 1
-    return(nextNum - 1)
 
 #Parses errors sent through.
 def handleError(code, message):
@@ -48,13 +48,16 @@ def parseReceived(input):
 
     if params[0] == "sum":
         #Sum response from a client.
-        display.show(params[2])
+        display.show(params[2], wait=False)
+        sleep(5000)
+        
         #Remove client from list.
-        clients.remove(params[1])
+        if (params[1] in clients):
+            clients.remove(params[1])
 
     #Handle error.
     elif params[0] == "err":
-        handleError(params[1], params[2])
+        handleError(params[1], " ".join(params[2:]))
 
 #Constantly sending worker_request.
 while True:
@@ -63,7 +66,9 @@ while True:
         radio.send("ping")
 
     if button_b.is_pressed():
-        radio.send(clients[0] + " sum 2 3")
+        if len(clients)>0:
+            #clientToSend = clients.copy()[0]
+            radio.send(clients[0] + " sum 2 3")
 
     #Parsing any responses.
     received = radio.receive()
