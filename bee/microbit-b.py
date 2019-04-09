@@ -22,6 +22,9 @@ ALLOWED_FUNCS = [
 macAddr = machine.unique_id()
 macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
 
+# flag denoting whether the worker is currently working for a queen or has been released and is available to pings
+heldByQueen = False
+
 # init list of known Prime numbers for this worker
 primeNumList = []
 
@@ -44,6 +47,13 @@ def sendResponse(procName, *responses):
     radio.send(resp) 
 def sendError(errNum, errMessage):
     radio.send("err " + str(errNum) + " " + str(errMessage))
+
+def hold(*args):
+    heldByQueen = True
+    return heldByQueen
+def release(*args):
+    heldByQueen = False
+    return heldByQueen
 
 # Exemplar computation function - sum a and b
 def sum(*args):
@@ -91,7 +101,8 @@ while True:
         params = str(recv).split(" ")
                 
         if params[0] == "ping": # queen looking for available workers
-            radio.send("pong " + macAddr) # let them know we're free and our unique ID for future interaction
+            if not heldByQueen:
+                radio.send("pong " + macAddr) # let them know we're free and our unique ID for future interaction
         # check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
