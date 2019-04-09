@@ -1,5 +1,5 @@
 Client to Server Responses:
-prime					[Unique Microbit ID]		int number			boolean prime
+prime					[Unique Microbit ID]		boolean prime
 
 Server to Client Requests:
 check					[Unique Microbit ID]		int number

@@ -5,7 +5,7 @@ import os
 #Dictionary of numbers and whether or not they have been found
 primes = {}
 #Next number to be found
-nextNum = 1
+nextNum = 0
 #Give a new number to be found
 def getNum():
     nextNum += 1
@@ -17,6 +17,9 @@ clients = []
 #Enabling the display and radio.
 display.on()
 radio.on()
+
+#A dictionary of each microbit's ID and whether or not it thinks it is a prime
+results = {}
 
 #Configuring the radio for group 1.
 radio.config(group=1)
@@ -58,11 +61,7 @@ def parseReceived(input):
 
     elif params[0] == "prime":
         #Setting a prime to true if it is prime and false if it is not
-        if params[2] not in primes.keys():
-            primes[int(params[2])] = params[3]
-
-        #Check for the next prime
-        radio.send(params[1] + " check " + getNum())
+        results[str(params[1])] = params[2]
 
     if params[0] == "sum":
         #Sum response from a client.
@@ -77,6 +76,16 @@ def parseReceived(input):
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
 
+def loop():
+    number = getNum()
+    #give each microbit the same number
+    
+    while len(responses) != len(clients):
+        pass
+
+    primes[nextNum - 1] = True # WRONG
+    loop()
+
 #Constantly sending worker_request.
 while True:
     #Casting to check for clients.
@@ -86,7 +95,8 @@ while True:
     if button_b.is_pressed():
         if len(clients)>0:
             #clientToSend = clients.copy()[0]
-            radio.send(clients[0] + " sum 2 3")
+            #radio.send(clients[0] + " sum 2 3")
+            loop()
 
     #Parsing any responses.
     received = radio.receive()
