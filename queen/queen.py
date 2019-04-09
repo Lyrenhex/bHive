@@ -31,7 +31,8 @@ while True:
     #Parsing any responses.
     received = radio.receive()
     if received != None:
-        parseReceived(receive)
+        parseReceived(received)
 
     #Showing current number of clients.
-    display.show(str(len(clients)))
+    display.clear()
+    display.show(str(len(clients)), wait=False)
