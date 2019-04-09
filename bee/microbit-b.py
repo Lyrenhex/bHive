@@ -14,7 +14,7 @@ import radio
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
-    "findPrime",
+    "testPrime",
     "addPrime"
 ]
 
