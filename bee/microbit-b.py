@@ -34,3 +34,26 @@ while True:
         elif params[1] == "sum":
             if params[0] == macAddr:
                 display.scroll(sum(params[2], params[3]))
+
+primeNumList = [2,3,5]
+testNum = 3
+
+def findPrime(TestNum):
+    prime = 0
+    for i in range(0, len(primeNumList)):
+        remainder = testNum % (primeNumList[i])
+        if remainder == 0:
+            prime += 1
+    if prime == 0:
+        primeTrue = True
+    else:
+        primeTrue = False
+    return primeTrue
+
+def addPrime(newPrime):
+    primeNumList.append(newPrime)
+
+primeTrue = findPrime(testNum)
+addPrime(testNum)
+
+print(primeTrue)
