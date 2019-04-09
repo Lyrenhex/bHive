@@ -7,3 +7,4 @@ A simple BLE micro:bit task distributor
 - Damian Heaton
 - Jonathan Watson
 - George Smith
+- Thomas Taylor
