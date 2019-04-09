@@ -62,7 +62,7 @@ def sum(*args):
 
 def findPrime(TestNum):
     prime = 0
-    for i in range(0, len(primeNumList)):
+    for i in range(len(primeNumList)):
         remainder = testNum % primeNumList[i]
         if remainder == 0:
             prime += 1
