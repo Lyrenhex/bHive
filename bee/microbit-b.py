@@ -22,6 +22,9 @@ ALLOWED_FUNCS = [
 macAddr = machine.unique_id()
 macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
 
+# init list of known Prime numbers for this worker
+primeNumList = [2,3,5]
+
 # enable BLE and Display
 radio.on()
 radio.config(group=GROUP)
@@ -60,17 +63,14 @@ def sum(*args):
 def findPrime(TestNum):
     prime = 0
     for i in range(0, len(primeNumList)):
-        remainder = testNum % (primeNumList[i])
+        remainder = testNum % primeNumList[i]
         if remainder == 0:
             prime += 1
-    if prime == 0:
-        primeTrue = True
-    else:
-        primeTrue = False
-    return primeTrue
+    return prime == 0
 
 def addPrime(newPrime):
-    primeNumList.append(newPrime)
+    if findPrime(newPrime):
+        primeNumList.append(newPrime)
 
 # Main loop
 while True:
@@ -94,11 +94,3 @@ while True:
                 if response is not None:
                     sendResponse(params[1], response)
         endProcess()
-
-primeNumList = [2,3,5]
-testNum = 3
-
-primeTrue = findPrime(testNum)
-addPrime(testNum)
-
-print(primeTrue)
