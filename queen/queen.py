@@ -1,7 +1,9 @@
 from microbit import *
 import radio
 
+#List of found prime numbers
 primes = []
+#List of IDs of all clients
 clients = []
 
 #Enabling the display and radio.
