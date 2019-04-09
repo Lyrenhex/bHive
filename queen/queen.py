@@ -1,5 +1,6 @@
 from microbit import *
 import radio
+import os
 
 primes = []
 clients = []
@@ -29,8 +30,8 @@ while True:
         radio.send("ping")
 
     if button_b.is_pressed():
-        radio.send(str(clients[0]) + " sum 2 3")
-        display.scroll(str(clients[0]) + " sum 2 3")
+        radio.send(clients[0] + " sum 2 3")
+        display.scroll(clients[0] + " sum 2 3")
 
     #Parsing any responses.
     received = radio.receive()

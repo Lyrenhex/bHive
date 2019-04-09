@@ -1,0 +1,8 @@
+Client to Server Responses:
+FUNC RESPONSES
+[Procedure name] [Unique Microbit ID] [Array of responses]
+
+ERROR RESPONSE
+err [error code] [error message]
+
+This means "err" is a reserved keyword, DO NOT USE.
