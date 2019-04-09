@@ -5,7 +5,7 @@ import ujson
 class Command():
     def __init__(self, function, *arg):
         self.function = function
-        self.args = arg  
+        self.args = arg
     
 
 display.on()
