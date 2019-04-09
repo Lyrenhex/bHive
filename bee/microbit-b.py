@@ -73,6 +73,7 @@ def testPrime(*testNums):
         return True
     else:
         sendError(1, "Can only test Primality of 1 int at a time.")
+        return None
 
 # Runs a check for Primality using testPrime (let's be certain!)
 # and if Prime, append to the primeNumList.
@@ -89,17 +90,21 @@ while True:
         # parse the radio data into something useful
         msg = str(recv)
         params = msg.split(" ")
-        
-        # note that we're gonna be computing now
-        
+                
         if params[0] == "ping": # ping check -- we're available -- pong!
             radio.send("pong " + macAddr)
         # check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
                 display.show(len(params[2:]))
+                
+                # compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
                 endProcess()
+
+                # if something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
                 if response is not None:
                     sendResponse(params[1], response)
+            else:
+                sendError(2, "Invalid function '" + params[1] + "'")
