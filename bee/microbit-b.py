@@ -80,8 +80,8 @@ def testPrime(testStr, *primeStrList):
     for prime in primeNumList:
         # if mod prime = 0, we aren't a Prime
         if (testNum % prime) == 0:
-            return False
-    return True
+            return (False, testStr)
+    return (True, testStr)
 
 # Main loop
 while True:
