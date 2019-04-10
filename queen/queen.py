@@ -14,7 +14,7 @@ verifiedPrimes = [2, 3, 5]
 nextNum = 2
 testingPrimes = False
 
-#Split the list of primes into a list of a given number of lists
+# Split the list of primes into a list of a given number of lists
 def delegatePrimes(number):
     # Get average length of the list of primes
     avg = len(verifiedPrimes) / float(number)
@@ -32,18 +32,18 @@ def delegatePrimes(number):
 
 ### END OF PRIME DEMO FUNCTIONS ##
 
-#List of IDs of all clients
+# List of IDs of all clients
 clients = []
 clientsResponded = []
 
-#Enabling the display and radio.
+# Enabling the display and radio
 display.on()
 radio.on()
 
-#Configuring the radio for group 1.
+# Configuring the radio for group 1
 radio.config(group=1)
 
-#Parses errors sent through.
+# Parses errors sent through
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
     sleep(2000)
@@ -53,14 +53,14 @@ def releaseAllClients():
     for client in clients:
         radio.send(client + " release")
 
-#Parsing received parameters.
+# Parsing received parameters
 def parseReceived(input):
-    #Extracting parameters from message.
+    # Extracting parameters from message
     params = str(input).split(" ")
 
-    #Switching for different commands.
+    # Switching for different commands
     if params[0] == "pong":
-        #Adding ID, if not already in the list.
+        # Adding ID, if not already in the list
         if params[1] not in clients:
             clients.append(params[1])
             radio.send(params[1] + " hold")
@@ -72,21 +72,21 @@ def parseReceived(input):
             primes.remove(params[1])
 
     if params[0] == "sum":
-        #Sum response from a client.
+        # Sum response from a client
         display.show(params[2], wait=False)
         sleep(5000)
         
-        #Remove client from list.
+        # Remove client from list
         if (params[1] in clients):
             clients.remove(params[1])
 
-    #Handle error.
+    # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
 
-#Constantly sending worker_request.
+# Constantly sending worker_request
 while True:
-    #Casting to check for clients.
+    # Casting to check for clients
     if button_a.is_pressed():
         radio.send("ping")
 
@@ -96,14 +96,14 @@ while True:
             clientsResponded = clients
     
     if testingPrimes:
-        # do not send out new tests until all clients have responded
-        # it's best to keep this synchronised
+        # Do not send out new tests until all clients have responded
+        # It's best to keep this synchronised
         if len(clientsResponded) == len(clients):
             clientsResponded = []
             checkPrime = nextNum
             nextNum += 1
             if (checkPrime - 1) in primes and (checkPrime - 1) not in verifiedPrimes:
-                # none of the fleet have discounted the previous prime, so we can verify it
+                # None of the fleet have discounted the previous prime, so we can verify it
                 verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
                 factorPrimeLists = delegatePrimes(len(clients))
@@ -116,11 +116,11 @@ while True:
                 releaseAllClients()
                 display.scroll(" ".join([str(n) for n in primes]))
 
-    #Parsing any responses.
+    # Parsing any responses
     received = radio.receive()
     if received != None:
         parseReceived(received)
 
-    #Showing current number of clients.
+    # Showing current number of clients
     display.clear()
     display.show(str(len(clients)), wait=False)
