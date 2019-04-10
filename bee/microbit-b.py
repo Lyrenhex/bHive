@@ -148,7 +148,7 @@ while True:
 
                 # If something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
                 if response is not None:
-                    if type(response) is tuple or if type(response) is list:
+                    if type(response) is tuple or type(response) is list:
                         response = [str(item) for item in response]
                         response = " ".join(response)
                     sendResponse(params[1], response)
