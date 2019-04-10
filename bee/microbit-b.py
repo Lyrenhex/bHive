@@ -3,7 +3,6 @@ import machine
 import random
 import radio
 
-# Define constants
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
