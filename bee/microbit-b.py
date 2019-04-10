@@ -14,7 +14,9 @@ import radio
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
-    "testPrime"
+    "testPrime",
+    "release",
+    "hold"
 ]
 
 # set up mac address-based unique id
