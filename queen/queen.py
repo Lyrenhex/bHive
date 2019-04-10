@@ -35,7 +35,7 @@ def delegatePrimes(number):
         output.append(primeDelegate)
         start += avg
 
-    display.scroll(" ".join(output))
+    display.scroll(" ".join(output[0]))
     return output
 
 # Parses errors sent through
@@ -66,7 +66,7 @@ def parseReceived(input):
     elif params[0] == "prime":
         clientsResponded.append(params[1])
         # If prime, remove from primes list
-        if (not params[2]) and (params[3] in primes):
+        if (not bool(params[2])) and (params[3] in primes):
             primes.remove(params[3])
 
     if params[0] == "sum":
