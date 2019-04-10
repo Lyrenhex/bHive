@@ -1,16 +1,8 @@
-"""
-Worker accepts a space-delimited string sent over BLE radio.
-Format: macAddr function param1 param2 ...
-
-Response: [ProcName] [Unique MicroBit ID] [...Responses] 
-          err [error code] [error message]
-"""
-
 from microbit import *
 import machine
 import radio
 
-# define constants
+# Define constants
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
@@ -19,42 +11,56 @@ ALLOWED_FUNCS = [
     "hold"
 ]
 
-# set up mac address-based unique id
+# Set up mac address-based unique id
 macAddr = machine.unique_id()
 macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
 
-# flag denoting whether the worker is currently working for a queen or has been released and is available to pings
+# Flag denoting whether the worker is currently working for a queen or has been released and is available to pings
 heldByQueen = False
 
-# init list of known Prime numbers for this worker
+# Create list of known prime numbers for this worker
 primeNumList = []
 
-# enable BLE and Display
+# Enable BLE and Display
 radio.on()
 radio.config(group=GROUP)
 display.on()
 
-# visual marker for when Microbit is busy computing
+
+# Visual marker for when worker is busy computing
 def startProcess():
     display.show(Image.SQUARE_SMALL)
+
+
+# Clears the screen when worker is not computing
 def endProcess():
     display.clear()
+
 
 # Function to send computed function response to Queen, using comms schema
 def sendResponse(procName, *responses):
     resp = procName + " " + macAddr
     for val in responses:
         resp += " " + str(val)
-    radio.send(resp) 
+    radio.send(resp)
+
+
+# Sends an error
 def sendError(errNum, errMessage):
     radio.send("err " + str(errNum) + " " + str(errMessage))
 
+
+# Holds the worker
 def hold(*args):
     heldByQueen = True
     return heldByQueen
+
+
+# Releases the worker
 def release(*args):
     heldByQueen = False
     return heldByQueen
+
 
 # Exemplar computation function - sum a and b
 def sum(*args):
@@ -71,34 +77,38 @@ def sum(*args):
         sendError(1, "Insufficient number of parameters.")
         return None
 
+
 # Tests testNum based on prime factorisation
-# If any Prime is a factor, then the number is not
-# a Prime number, so we return False. Else, True.
+# If any prime is a factor, then the number is not
+# a prime number, so we return False. Else, True.
 def testPrime(testStr, *primeStrList):
     testNum = int(testStr)
     primeNumList = [int(n) for n in primeStrList]
     for prime in primeNumList:
-        # if mod prime = 0, we aren't a Prime
+        # If mod prime = 0, we aren't a prime
         if (testNum % prime) == 0:
             return (False, testStr)
     return (True, testStr)
 
 # Main loop
 while True:
-    # keep polling BLE for data
+    # Keep polling BLE for data
     recv = radio.receive()
-    # if not empty
+    # If not empty
     if recv is not None:
-        # parse the radio data into something useful
+        # Parse the radio data into something useful
         params = str(recv).split(" ")
-                
-        if params[0] == "ping": # queen looking for available workers
+
+        # Queen looking for available workers
+        if params[0] == "ping":
             if not heldByQueen:
-                radio.send("pong " + macAddr) # let them know we're free and our unique ID for future interaction
-        # check that the instruction is intended for us
+                # Let them know that we're free and our unique ID for future interaction
+                radio.send("pong " + macAddr)
+
+        # Check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
-                # compute the task requested (and note that we're busy and haven't broken)
+                # Compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
                 if type(response) is not str:
@@ -106,7 +116,7 @@ while True:
                     response = " ".join(response)
                 endProcess()
 
-                # if something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
+                # If something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
                 if response is not None:
                     sendResponse(params[1], response)
             else:
