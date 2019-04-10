@@ -18,4 +18,7 @@ will make it scan for connected clients, to execute the given command.
 
 Pressing the B button will execute the current command.
 
+## Style Guide
+Use PEP8. You may ignore E266 and E501.
+
 This README has yet to be expanded further.
