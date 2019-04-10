@@ -77,7 +77,6 @@ def sum(*args):
 def testPrime(*testNums):
     testNum = int(testNums[0])
     primeNumList = [int(n) for n in testNums[1:]]
-    display.scroll(" ".join(testNums))
     for prime in primeNumList:
         # if mod prime = 0, we aren't a Prime
         if (testNum % prime) == 0:
