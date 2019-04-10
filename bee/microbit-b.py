@@ -76,7 +76,12 @@ def sum(*args):
 # a Prime number, so we return False. Else, True.
 def testPrime(*testNums):
     testNum = int(testNums[0])
-    primeNumList = [int(n) for n in testNums[1:]]
+    primeStrList = testNums[1:]
+    primeNumList = []
+    for prime in primeStrList:
+        display.show(prime)
+        sleep(2000)
+        primeNumList.append(int(prime))
     for prime in primeNumList:
         # if mod prime = 0, we aren't a Prime
         if (testNum % prime) == 0:
