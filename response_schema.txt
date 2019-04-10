@@ -1,8 +1,11 @@
 Client to Server Responses:
-prime					[Unique Microbit ID]		boolean prime
+pong					[Unique Microbit ID]
+prime					[Unique Microbit ID]		[boolean prime]
+sum						[Unique Microbit ID]		[int sum]
 
 Server to Client Requests:
-check					[Unique Microbit ID]		int number
+check					[Unique Microbit ID]		[int number]
+sum						[Unique Microbit ID]		[int num1]	[int num2]	[int num3]	...
 
 FUNC RESPONSES
 [Procedure name]		[Unique Microbit ID]		[Space delimited list of responses]
