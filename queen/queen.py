@@ -14,11 +14,6 @@ verifiedPrimes = [2, 3, 5]
 nextNum = 0
 testingPrimes = False
 
-# Generate next number
-def getNum():
-    nextNum += 1
-    return nextNum - 1
-
 #Split the list of primes into a list of a given number of lists
 def splitPrimes(number):
     # Get average length of the list of primes
@@ -104,7 +99,8 @@ while True:
         # it's best to keep this synchronised
         if len(clientsResponded) == len(clients):
             clientsResponded = []
-            checkPrime = getNum()
+            checkPrime = nextNum
+            nextNum += 1
             if (checkPrime - 1) in primes and (checkPrime - 1) not in verifiedPrimes:
                 # none of the fleet have discounted the previous prime, so we can verify it
                 verifiedPrimes.append(checkPrime - 1)
