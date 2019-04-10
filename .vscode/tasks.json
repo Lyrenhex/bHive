@@ -6,7 +6,7 @@
         {
             "label": "Build Microbit",
             "type": "shell",
-            "command": "uflash \"/home/c272/Repos/bHive-Team/queen/queen.py\" \"/media/c272/MICROBIT/\"",
+            "command": "uflash \"/home/dh64784/bHive/queen/queen.py\" \"/mnt/MICROBIT\"",
             "group": {
                 "kind": "build",
                 "isDefault": true
