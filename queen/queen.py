@@ -10,8 +10,8 @@ import os
 # Assume all numbers are prime, we'll remove the ones which aren't
 primes = [i for i in range(100)]
 verifiedPrimes = [2, 3, 5]
-# Next number to check
-nextNum = 0
+# Next number to check -- 0 and 1 are not prime
+nextNum = 2
 testingPrimes = False
 
 #Split the list of primes into a list of a given number of lists
