@@ -101,6 +101,9 @@ while True:
                 # compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
+                if type(response) is not str:
+                    response = [str(item) for item in response]
+                    response = " ".join(response)
                 endProcess()
 
                 # if something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
