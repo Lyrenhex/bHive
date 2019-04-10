@@ -115,7 +115,6 @@ while True:
                 for i, client in enumerate(clients):
                     factorPrimeList = factorPrimeLists[i]
                     factorPrimes = " ".join(factorPrimeList)
-                    display.scroll(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
                     radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
             else:
                 testingPrimes = False
