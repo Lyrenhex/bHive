@@ -107,7 +107,7 @@ while True:
             clientsResponded = []
             checkPrime = nextNum
             nextNum += 1
-            if (checkPrime - 1) in primes and (checkPrime - 1) not in verifiedPrimes:
+            if (checkPrime - 1) in primes and (checkPrime - 1) not in verifiedPrimes and (checkPrime - 1) != 1:
                 # None of the fleet have discounted the previous prime, so we can verify it
                 verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
@@ -115,6 +115,7 @@ while True:
                 for i, client in enumerate(clients):
                     factorPrimeList = factorPrimeLists[i]
                     factorPrimes = " ".join(factorPrimeList)
+                    display.scroll(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
                     radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
             else:
                 testingPrimes = False
