@@ -82,7 +82,6 @@ def evaluate(instr, currentEnv):
     elif instr[0]=="def":
         (_, var, exp) = instr
         currentEnv[var] = evaluate(exp, currentEnv)
-        print(currentEnv)
     # Defining or executing a lambda.
     elif instr[0] == 'lambda':
         (_, params, body) = instr
@@ -96,7 +95,7 @@ def evaluate(instr, currentEnv):
 # Tokenizes a given script, returns.
 def tokenize(script):
     # Use a char hack to split the string into bracket operations.
-    return script.replace('(', ' ( ').replace(')', ' ) ').split()
+    return script.replace('(', ' ( ').replace(')', ' ) ').replace('\n', '').replace('\t', '').strip().split()
 
 # "Atomizes" the given token, to convert from all symbols to numbers and symbols.
 def atomize(token):
@@ -135,6 +134,7 @@ def tokenparse(tokens):
 def parsePollenLine(script):
     # Tokenizing the pollen script.
     tokens = tokenize(script)
+
     # Parsing the tokens.
     parsed = tokenparse(tokens)
 
@@ -142,8 +142,20 @@ def parsePollenLine(script):
     return evaluate(parsed, env)
 
 def parsePollen(script):
-    # Splitting the lines by ";".
+    # Removing junk from start and end.
+    for char in script:
+        if char!="\n" and char!=" ":
+            break
+        script = script.replace(char, "", 1)
+    for char in reversed(script):
+        if char!="\n" and char!=" ":
+            break
+        script = script[:-1]
+
+    print(script)
+    # Splitting string by ";".
     lines = script.split(";")
+    print(lines)
 
     # Executing all lines apart from last.
     nonReturnLines = lines[:-1]
@@ -155,7 +167,8 @@ def parsePollen(script):
 
 print(parsePollen("""
 (def gamer (lambda (x) (+ x 4)));
-(gamer 6)
+(def supergamer
+(gamer 6));
 """))
 
 #### END POLLEN INTERPRETER ####
