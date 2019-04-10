@@ -34,8 +34,6 @@ def splitPrimes(number):
 
     return output
 
-splitPrimes(2)
-
 ### END OF PRIME DEMO FUNCTIONS ##
 
 #List of IDs of all clients
