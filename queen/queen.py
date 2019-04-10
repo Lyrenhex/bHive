@@ -2,10 +2,6 @@ from microbit import *
 import radio
 import os
 
-##########################
-## PRIME DEMO FUNCTIONS ##
-##########################
-
 # List of prime numbers
 # Assume all numbers are prime, we'll remove the ones which aren't
 primes = [i for i in range(100)]
@@ -14,6 +10,16 @@ verifiedPrimes = [2, 3, 5]
 nextNum = 2
 testingPrimes = False
 
+# List of IDs of all clients
+clients = []
+clientsResponded = []
+
+# Enabling the display and radio
+display.on()
+radio.on()
+
+# Configuring the radio for group 1
+radio.config(group=1)
 
 # Split the list of primes into a list of a given number of lists
 def delegatePrimes(number):
@@ -29,21 +35,8 @@ def delegatePrimes(number):
         output.append(primeDelegate)
         start += avg
 
+    display.scroll(" ".join(output))
     return output
-
-### END OF PRIME DEMO FUNCTIONS ##
-
-# List of IDs of all clients
-clients = []
-clientsResponded = []
-
-# Enabling the display and radio
-display.on()
-radio.on()
-
-# Configuring the radio for group 1
-radio.config(group=1)
-
 
 # Parses errors sent through
 def handleError(code, message):
