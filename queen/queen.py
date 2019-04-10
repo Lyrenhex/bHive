@@ -35,7 +35,6 @@ def delegatePrimes(number):
         output.append(primeDelegate)
         start += avg
 
-    display.scroll(" ".join(output[0]))
     return output
 
 # Parses errors sent through
@@ -65,9 +64,9 @@ def parseReceived(input):
 
     elif params[0] == "prime":
         clientsResponded.append(params[1])
-        display.scroll(" ".join(params))
+        display.scroll(params[2])
         # If prime, remove from primes list
-        if (not bool(params[2])) and (params[3] in primes):
+        if (not bool(params[2])) and (int(params[3]) in primes):
             primes.remove(params[3])
 
     if params[0] == "sum":
@@ -113,7 +112,7 @@ while True:
             else:
                 testingPrimes = False
                 releaseAllClients()
-                display.scroll(" ".join([str(n) for n in primes]))
+                display.scroll(" ".join([str(n) for n in verifiedPrimes]))
 
     # Parsing any responses
     received = radio.receive()
