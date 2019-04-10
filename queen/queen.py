@@ -2,17 +2,8 @@ from microbit import *
 import radio
 import os
 
-# List of prime numbers
-# Assume all numbers are prime, we'll remove the ones which aren't
-primes = [i for i in range(100)]
-verifiedPrimes = [2, 3, 5]
-# Next number to check -- 0 and 1 are not prime
-nextNum = 2
-testingPrimes = False
-
 # List of IDs of all clients
 clients = []
-clientsResponded = []
 
 # Enabling the display and radio
 display.on()
@@ -20,22 +11,6 @@ radio.on()
 
 # Configuring the radio for group 1
 radio.config(group=1)
-
-# Split the list of primes into a list of a given number of lists
-def delegatePrimes(number):
-    # Get average length of the list of primes
-    avg = len(verifiedPrimes) / float(number)
-    # Start of each slice
-    start = 0.0
-    output = []
-
-    # While you still can get more numbers
-    while start < len(verifiedPrimes):
-        primeDelegate = [str(n) for n in verifiedPrimes[int(start):int(start + avg)]]
-        output.append(primeDelegate)
-        start += avg
-
-    return output
 
 # Parses errors sent through
 def handleError(code, message):
@@ -61,15 +36,7 @@ def parseReceived(input):
         if params[1] not in clients:
             clients.append(params[1])
             radio.send(params[1] + " hold")
-
-    elif params[0] == "prime":
-        clientsResponded.append(params[1])
-        display.scroll(params[2])
-        # If prime, remove from primes list
-        if (not bool(params[2])) and (int(params[3]) in primes):
-            primes.remove(params[3])
-
-    if params[0] == "sum":
+    elif params[0] == "sum":
         # Sum response from a client
         display.show(params[2], wait=False)
         sleep(5000)
@@ -77,7 +44,6 @@ def parseReceived(input):
         # Remove client from list
         if (params[1] in clients):
             clients.remove(params[1])
-
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
@@ -92,27 +58,6 @@ while True:
         if len(clients) > 0:
             testingPrimes = True
             clientsResponded = clients
-
-    if testingPrimes:
-        # Do not send out new tests until all clients have responded
-        # It's best to keep this synchronised
-        if len(clientsResponded) == len(clients):
-            clientsResponded = []
-            checkPrime = nextNum
-            nextNum += 1
-            if (checkPrime - 1) in primes and (checkPrime - 1) not in verifiedPrimes and (checkPrime - 1) != 1:
-                # None of the fleet have discounted the previous prime, so we can verify it
-                verifiedPrimes.append(checkPrime - 1)
-            if checkPrime <= max(primes):
-                factorPrimeLists = delegatePrimes(len(clients))
-                for i, client in enumerate(clients):
-                    factorPrimeList = factorPrimeLists[i]
-                    factorPrimes = " ".join(factorPrimeList)
-                    radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
-            else:
-                testingPrimes = False
-                releaseAllClients()
-                display.scroll(" ".join([str(n) for n in verifiedPrimes]))
 
     # Parsing any responses
     received = radio.receive()
