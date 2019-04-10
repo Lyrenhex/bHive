@@ -74,14 +74,11 @@ def sum(*args):
 # Tests testNum based on prime factorisation
 # If any Prime is a factor, then the number is not
 # a Prime number, so we return False. Else, True.
-def testPrime(*testNums):
-    testNum = int(testNums[0])
-    primeStrList = testNums[1:]
-    primeNumList = []
-    for prime in primeStrList:
-        display.show(prime)
-        sleep(2000)
-        primeNumList.append(int(prime))
+def testPrime(testStr, *primeStrList):
+    display.show(testStr)
+    sleep(2000)
+    testNum = int(testStr)
+    primeNumList = [int(n) for n in primeStrList]
     for prime in primeNumList:
         # if mod prime = 0, we aren't a Prime
         if (testNum % prime) == 0:
