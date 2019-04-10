@@ -110,14 +110,13 @@ while True:
                 i = 0
                 for client in clients:
                     factorPrimeList = factorPrimeLists[i]
-                    display.scroll(str(type(factorPrimeList)))
                     factorPrimes = " ".join(factorPrimeList)
                     radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
                     i += 1
             else:
                 testingPrimes = False
                 releaseAllClients()
-                display.scroll(" ".join(primes))
+                display.scroll(" ".join([str(n) for n in primes]))
 
     #Parsing any responses.
     received = radio.receive()
