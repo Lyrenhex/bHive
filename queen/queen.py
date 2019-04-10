@@ -14,6 +14,7 @@ verifiedPrimes = [2, 3, 5]
 nextNum = 2
 testingPrimes = False
 
+
 # Split the list of primes into a list of a given number of lists
 def delegatePrimes(number):
     # Get average length of the list of primes
@@ -43,15 +44,19 @@ radio.on()
 # Configuring the radio for group 1
 radio.config(group=1)
 
+
 # Parses errors sent through
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
     sleep(2000)
     display.scroll(message)
 
+
+# Removes all clients
 def releaseAllClients():
     for client in clients:
         radio.send(client + " release")
+
 
 # Parsing received parameters
 def parseReceived(input):
@@ -75,7 +80,7 @@ def parseReceived(input):
         # Sum response from a client
         display.show(params[2], wait=False)
         sleep(5000)
-        
+
         # Remove client from list
         if (params[1] in clients):
             clients.remove(params[1])
@@ -94,7 +99,7 @@ while True:
         if len(clients) > 0:
             testingPrimes = True
             clientsResponded = clients
-    
+
     if testingPrimes:
         # Do not send out new tests until all clients have responded
         # It's best to keep this synchronised
@@ -118,7 +123,7 @@ while True:
 
     # Parsing any responses
     received = radio.receive()
-    if received != None:
+    if received is not None:
         parseReceived(received)
 
     # Showing current number of clients
