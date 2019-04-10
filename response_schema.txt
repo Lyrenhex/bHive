@@ -1,10 +1,10 @@
 Client to Server Responses:
 pong					[Unique Microbit ID]
-prime					[Unique Microbit ID]		[boolean prime]
+prime					[Unique Microbit ID]		[boolean isPrime] [int number]
 sum						[Unique Microbit ID]		[int sum]
 
 Server to Client Requests:
-check					[Unique Microbit ID]		[int number]
+testPrime				[Unique Microbit ID]		[int number]
 sum						[Unique Microbit ID]		[int num1]	[int num2]	[int num3]	...
 
 FUNC RESPONSES

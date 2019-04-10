@@ -66,10 +66,10 @@ def parseReceived(input):
             radio.send(params[1] + " hold")
 
     elif params[0] == "prime":
-        clientsResponded.append(params[0])
+        clientsResponded.append(params[1])
         # If prime, remove from primes list
-        if (not params[2]) and (params[1] in primes):
-            primes.remove(params[1])
+        if (not params[2]) and (params[3] in primes):
+            primes.remove(params[3])
 
     if params[0] == "sum":
         # Sum response from a client
