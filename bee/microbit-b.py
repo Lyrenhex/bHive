@@ -75,8 +75,9 @@ def sum(*args):
 # If any Prime is a factor, then the number is not
 # a Prime number, so we return False. Else, True.
 def testPrime(*testNums):
-    testNum = testNums[0]
-    primeNumList = testNums[1:]
+    testNum = int(testNums[0])
+    primeNumList = [int(n) for n in testNums[1:]]
+    display.scroll(" ".join(testNums))
     for prime in primeNumList:
         # if mod prime = 0, we aren't a Prime
         if (testNum % prime) == 0:
