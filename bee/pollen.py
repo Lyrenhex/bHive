@@ -152,10 +152,14 @@ def parsePollen(script):
             break
         script = script[:-1]
 
-    print(script)
     # Splitting string by ";".
     lines = script.split(";")
-    print(lines)
+
+    # Removing all \ns from lines, deleting blank ones.
+    for index, line in enumerate(lines):
+        lines[index] = line.replace("\n", "")
+        if line=="":
+            lines.remove(line)
 
     # Executing all lines apart from last.
     nonReturnLines = lines[:-1]
@@ -167,8 +171,11 @@ def parsePollen(script):
 
 print(parsePollen("""
 (def gamer (lambda (x) (+ x 4)));
-(def supergamer
-(gamer 6));
+
+(def supergamer 
+ (gamer 6));
+
+(+ supergamer 3);
 """))
 
 #### END POLLEN INTERPRETER ####
