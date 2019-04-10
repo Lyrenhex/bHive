@@ -1,5 +1,6 @@
 from microbit import *
 import machine
+import random
 import radio
 
 # Define constants
@@ -77,18 +78,51 @@ def sum(*args):
         sendError(1, "Insufficient number of parameters.")
         return None
 
-
-# Tests testNum based on prime factorisation
-# If any prime is a factor, then the number is not
-# a prime number, so we return False. Else, True.
-def testPrime(testStr, *primeStrList):
+# Rabin Miller Primality Test
+def rmTest(testStr, certainty):
     testNum = int(testStr)
-    primeNumList = [int(n) for n in primeStrList]
-    for prime in primeNumList:
-        # If mod prime = 0, we aren't a prime
-        if (testNum % prime) == 0:
-            return (False, testStr)
-    return (True, testStr)
+    # filter out simple primes
+    if testNum == 2 or testNum == 3:
+        return True
+    if testNum < 2 or testNum % 2 == 0:
+        return False
+    
+    d = testNum - 1
+    s = 0
+
+    while d % 2 == 0:
+        d /= 2
+        s += 1
+    
+    d = int(d)
+    
+    for i in range(certainty):
+        a = random.randint(2, testNum - 2)
+        x = (a ** d) % testNum
+        if x == 1 or x == testNum - 1:
+            continue
+        
+        r = 1
+        while r < s:
+            x = (x ** 2) % testNum
+            if x == 1:
+                return False
+            elif x == testNum - 1:
+                break
+            r += 1
+        
+        if x != testNum - 1:
+            return False
+    
+    return True
+
+def testPrime(*primes):
+    verifiedPrimes = []
+    for prime in primes:
+        prime = int(prime)
+        if rmTest(prime, 5):
+            verifiedPrimes.append(prime)
+    return verifiedPrimes
 
 # Main loop
 while True:
@@ -114,7 +148,7 @@ while True:
 
                 # If something goes wrong (error, etc), all computations should return None. DO NOT SEND RESULT TO SERVER IF RESULT IS NONE
                 if response is not None:
-                    if type(response) is tuple:
+                    if type(response) is tuple or if type(response) is list:
                         response = [str(item) for item in response]
                         response = " ".join(response)
                     sendResponse(params[1], response)
