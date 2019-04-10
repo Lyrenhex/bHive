@@ -15,7 +15,7 @@ nextNum = 0
 testingPrimes = False
 
 #Split the list of primes into a list of a given number of lists
-def splitPrimes(number):
+def delegatePrimes(number):
     # Get average length of the list of primes
     avg = len(verifiedPrimes) / float(number)
     # Start of each slice
@@ -24,7 +24,8 @@ def splitPrimes(number):
 
     # While you still can get more numbers
     while start < len(verifiedPrimes):
-        output.append(verifiedPrimes[int(start):int(start + avg)])
+        primeDelegate = [str(n) for n in verifiedPrimes[int(start):int(start + avg)]]
+        output.append(primeDelegate)
         start += avg
 
     return output
@@ -105,10 +106,13 @@ while True:
                 # none of the fleet have discounted the previous prime, so we can verify it
                 verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
-                factorPrimeLists = splitPrimes(len(clients))
+                factorPrimeLists = delegatePrimes(len(clients))
                 i = 0
                 for client in clients:
-                    radio.send(client + " testPrime " + str(checkPrime) + " " + " ".join(factorPrimeLists[i]))
+                    factorPrimeList = factorPrimeLists[i]
+                    display.scroll(str(type(factorPrimeList)))
+                    factorPrimes = " ".join(factorPrimeList)
+                    radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
                     i += 1
             else:
                 testingPrimes = False
