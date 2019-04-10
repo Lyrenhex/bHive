@@ -107,7 +107,7 @@ while True:
         if len(clientsResponded) == len(clients):
             clientsResponded = []
             checkPrime = getNum()
-            if (checkPrime - 1) is in primes:
+            if (checkPrime - 1) is in primes and (checPrime - 1) is not in verifiedPrimes:
                 # none of the fleet have discounted the previous prime, so we can verify it
                 verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
