@@ -1,6 +1,22 @@
 # bHive
-micro:bit task distributor
+A simple BLE micro:bit task distributor
 
-Finds the product of the first nine numbers. Load the 'hub' code onto one micro:bit and the 'worker' code onto any other micro:bits you want to distribute the numbers to (maximum of three). 
-To run the program, press 'a' on the worker micro:bits in turn in order to identify them. Then press 'a' on the hub to send out the numbers, followed by 'b' on the workers in turn to send the products back to the hub. Finally press 'b' on the hub to display the product of numbers 1-9.
+## Collaborators
+- Larry Tang
+- Damian Heaton
+- Jonathan Watson
+- George Smith
+- Thomas Taylor
 
+## Quick Start
+To use bHive, you must compile the client ("bee") and the server ("queen") separately.
+This can be done by using uflash for pip3, or by compiling in the [micro:bit MicroPython editor](https://python.microbit.org/).
+
+When you've flashed both your "queen" and "bee" chips, hold down the A button on the queen to make it scan for connected clients to execute the given commands.
+
+Pressing the B button will execute the current commands.
+
+## Style Guide
+Use PEP8. You may ignore E266 and E501.
+
+This README has yet to be expanded further.
