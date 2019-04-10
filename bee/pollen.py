@@ -15,6 +15,7 @@ def getStandardEnvironment():
         '-': ops.sub,
         '*': ops.mul,
         '/': ops.truediv,
+        '%': ops.mod,
         '<': ops.lt,
         '>': ops.gt,
         '<=': ops.le,
@@ -170,12 +171,9 @@ def parsePollen(script):
     return parsePollenLine(lines[-1])
 
 print(parsePollen("""
-(def gamer (lambda (x) (+ x 4)));
-
-(def supergamer 
- (gamer 6));
-
-(+ supergamer 3);
+(def square (lambda (x) (* x x)));
+(def mod_sq (lambda (x y) (% (square x) y)));
+(mod_sq 4 5);
 """))
 
 #### END POLLEN INTERPRETER ####
