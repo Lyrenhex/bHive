@@ -65,6 +65,7 @@ def parseReceived(input):
 
     elif params[0] == "prime":
         clientsResponded.append(params[1])
+        display.scroll(" ".join(params))
         # If prime, remove from primes list
         if (not bool(params[2])) and (params[3] in primes):
             primes.remove(params[3])
