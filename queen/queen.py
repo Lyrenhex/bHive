@@ -107,12 +107,10 @@ while True:
                 verifiedPrimes.append(checkPrime - 1)
             if checkPrime <= max(primes):
                 factorPrimeLists = delegatePrimes(len(clients))
-                i = 0
-                for client in clients:
+                for i, client in enumerate(clients):
                     factorPrimeList = factorPrimeLists[i]
                     factorPrimes = " ".join(factorPrimeList)
                     radio.send(client + " testPrime " + str(checkPrime) + " " + factorPrimes)
-                    i += 1
             else:
                 testingPrimes = False
                 releaseAllClients()
