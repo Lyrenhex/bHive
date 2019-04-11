@@ -126,6 +126,9 @@ def testPrime(start, numberOfIterations):
 
 # Main loop
 while True:
+    if heldByQueen:
+        display.show("H")
+
     # Keep polling BLE for data
     recv = radio.receive()
     # If not empty
