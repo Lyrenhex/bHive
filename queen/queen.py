@@ -3,8 +3,13 @@ import radio
 import utime
 import os
 
+global isPolling
+global pollTime
+
 MAX_PRIME = 100
 MIN_PRIME = 2
+
+nextChannel = (7, False)
 
 # List of IDs of all clients
 clients = []
@@ -12,13 +17,9 @@ clients = []
 primes = []
 
 isOccupied = False
-global isPolling, pollTime
 isPolling = False
 pollTime = 0
 spyActive = False
-
-nextChannel = 7
-channel7Sent = False
 
 # Enabling the display and radio
 display.on()
@@ -41,15 +42,13 @@ def delegatePrimes():
 
     return delegatedPrimes
 
-def getChannel():
-    if nextChannel == 7 and not channel7Sent:
-        nextChannel = 0
-        channel7Sent = True
+def getChannel(i):
+    if i == 0:
         return 7
-    elif nextChannel == 7:
-        nextChannel = 8
-    nextChannel += 1
-    return nextChannel - 1
+    elif i >= 7:
+        return i + 1
+    else:
+        return i
 
 # Parses errors sent through
 def handleError(code, message):
@@ -106,7 +105,6 @@ while True:
         isPolling = True
         spyActive = True
         pollTime = 0
-        getWorkers()
     
     if isPolling:
         sleep(1) # sleep 1 ms
@@ -114,16 +112,10 @@ while True:
         if pollTime >= 200:
             isPolling = False
             pollTime = 0
-    
-    if spyActive:
-        if isReady():
-            t = "A"
-        display.show(t)
 
-    if spyActive and isReady():
-        display.scroll(" spyRSA " + str(getChannel()) + " 20")
-        for client in clients:
-            radio.send(client + " spyRSA " + str(getChannel()) + " 20000")
+    if spyActive and not isPolling:
+        for i, client in enumerate(clients):
+            radio.send(client + " spyRSA " + str(getChannel(i)) + " 20000")
         spyActive = False
 
     if button_b.is_pressed() and not isOccupied:
