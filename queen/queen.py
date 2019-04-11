@@ -2,8 +2,12 @@ from microbit import *
 import radio
 import os
 
+MAX_PRIME = 100
+
 # List of IDs of all clients
 clients = []
+
+primes = []
 
 # Enabling the display and radio
 display.on()
@@ -11,6 +15,13 @@ radio.on()
 
 # Configuring the radio for group 1
 radio.config(group=1)
+
+def delegatePrimes(MAX_PRIME):
+    primesPerWorker = (MAX_PRIME - 2) // len(clients)
+    delegatedPrimes = [[n * primesPerWorker, primesPerWorker] for n in range(len(clients))]
+    if primesPerWorker * len(clients) < MAX_PRIME:
+        delegatedPrimes[-1][1] += MAX_PRIME - (primesPerWorker * len(clients))
+    return delegatedPrimes
 
 # Parses errors sent through
 def handleError(code, message):
@@ -44,6 +55,9 @@ def parseReceived(input):
         # Remove client from list
         if (params[1] in clients):
             clients.remove(params[1])
+    elif params[0] == "prime":
+        if bool(params[2]):
+            primes.append(int(params[3]))
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
@@ -56,8 +70,9 @@ while True:
 
     if button_b.is_pressed():
         if len(clients) > 0:
-            testingPrimes = True
-            clientsResponded = clients
+            primesToTest = delegatePrimes(MAX_PRIME)
+            for client in clients:
+                radio.send(client + " testPrime " + primesToTest)
 
     # Parsing any responses
     received = radio.receive()
