@@ -83,7 +83,7 @@ def rmTest(testStr, certainty):
     # filter out simple primes
     if testNum == 2 or testNum == 3:
         return True
-    if testNum < 2 or testNum % 2 == 0:
+    if testNum < 2 or testNum % 2 == 0 or testNum % 3 == 0:
         return False
     
     d = testNum - 1
@@ -115,16 +115,22 @@ def rmTest(testStr, certainty):
     
     return True
 
-def testPrime(*primes):
+def testPrime(start, numberOfIterations):
     verifiedPrimes = []
-    for prime in primes:
-        prime = int(prime)
+    start = int(start)
+    for prime in range(int(numberOfIterations)):
+        prime = int(prime) + start
         if rmTest(prime, 5):
             verifiedPrimes.append(prime)
     return verifiedPrimes
 
 # Main loop
 while True:
+    if heldByQueen:
+        display.show("H")
+    else:
+        display.clear()
+
     # Keep polling BLE for data
     recv = radio.receive()
     # If not empty
