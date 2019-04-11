@@ -2,12 +2,14 @@ from microbit import *
 import radio
 import os
 
-MAX_PRIME = 9
+MAX_PRIME = 100
 
 # List of IDs of all clients
 clients = []
 
 primes = []
+
+isOccupied = False
 
 # Enabling the display and radio
 display.on()
@@ -56,6 +58,7 @@ def parseReceived(input):
         if (params[1] in clients):
             clients.remove(params[1])
     elif params[0] == "testPrime":
+        isOccupied = False
         for prime in params[2:]:
             primes.append(int(prime))
             display.show(prime)
@@ -70,7 +73,8 @@ while True:
     if button_a.is_pressed():
         radio.send("ping")
 
-    if button_b.is_pressed():
+    if button_b.is_pressed() and not isOccupied:
+        isOccupied = True
         if len(clients) > 0:
             primesToTest = delegatePrimes(MAX_PRIME)
             for i, client in enumerate(clients):
