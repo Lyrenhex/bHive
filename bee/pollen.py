@@ -15,6 +15,7 @@ def getStandardEnvironment():
         '-': ops.sub,
         '*': ops.mul,
         '/': ops.truediv,
+        '%': ops.mod,
         '<': ops.lt,
         '>': ops.gt,
         '<=': ops.le,
@@ -152,10 +153,17 @@ def parsePollen(script):
             break
         script = script[:-1]
 
-    print(script)
     # Splitting string by ";".
     lines = script.split(";")
-    print(lines)
+
+    # Remove any lines beginning with comment characters.
+    # Removing all \ns from lines, deleting blank ones.
+    for index, line in enumerate(lines):
+        lines[index] = line.replace("\n", "")
+        if line=="" or line.count(" ") == len(line):
+            lines.remove(line)
+        elif line[0]=="#":
+            lines.remove(line)
 
     # Executing all lines apart from last.
     nonReturnLines = lines[:-1]
@@ -166,9 +174,10 @@ def parsePollen(script):
     return parsePollenLine(lines[-1])
 
 print(parsePollen("""
-(def gamer (lambda (x) (+ x 4)));
-(def supergamer
-(gamer 6));
+# You gotta end comments with a semi;
+(def square (lambda (x) (* x x)));
+(def mod_sq (lambda (x y) (% (square x) y)));
+(mod_sq 4 5);
 """))
 
 #### END POLLEN INTERPRETER ####
