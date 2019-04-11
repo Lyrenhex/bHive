@@ -56,6 +56,7 @@ def parseReceived(input):
         if (params[1] in clients):
             clients.remove(params[1])
     elif params[0] == "prime":
+        display.show(int(bool(params[2])))
         if bool(params[2]):
             primes.append(int(params[3]))
             display.show(params[3])
