@@ -2,7 +2,7 @@ from microbit import *
 import radio
 import os
 
-MAX_PRIME = 100
+MAX_PRIME = 9
 
 # List of IDs of all clients
 clients = []
@@ -58,6 +58,7 @@ def parseReceived(input):
     elif params[0] == "prime":
         if bool(params[2]):
             primes.append(int(params[3]))
+            display.show(params[3])
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
@@ -72,7 +73,8 @@ while True:
         if len(clients) > 0:
             primesToTest = delegatePrimes(MAX_PRIME)
             for i, client in enumerate(clients):
-                primesToTestStr = [str(n) for n in primesToTest[i]]
+                primesToTestList = [str(n) for n in primesToTest[i]]
+                primesToTestStr = " ".join(primesToTestList)
                 radio.send(client + " testPrime " + primesToTestStr)
 
     # Parsing any responses
