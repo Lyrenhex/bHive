@@ -86,13 +86,9 @@ def parseReceived(input):
         for prime in params[2:]:
             primes.append(int(prime))
     elif params[0] == "spyRSA":
-        display.scroll(params[2:])
-        if bool(params[2]):
+        if params[2] == "True":
             data = " ".join(params[3:])
             display.scroll(data)
-        else:
-            display.show('X')
-            sleep(1000)
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
