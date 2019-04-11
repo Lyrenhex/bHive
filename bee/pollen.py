@@ -21,6 +21,8 @@ def getStandardEnvironment():
         '<=': ops.le,
         '>=': ops.ge,
         '=': ops.eq,
+        'true': True,
+        'false': False,
         'abs': abs,
         'append': ops.add,
         'max': max,
@@ -64,6 +66,16 @@ class Procedure(object):
         local_env =  getLocalEnv(dict(zip(self.params, args)), env)
         return evaluate(self.body, local_env)
 
+# "Atomizes" the given token, to convert from all symbols to numbers and symbols.
+def atomize(token):
+    try:
+        return int(token)
+    except ValueError:
+        try:
+            return float(token)
+        except ValueError:
+            return token
+
 # Evaluates the set of instructions parsed by tokenparse.
 Number = (int, float)
 def evaluate(instr, currentEnv):
@@ -71,7 +83,7 @@ def evaluate(instr, currentEnv):
     if isinstance(instr, str):
         return currentEnv[instr]
     # Referencing a constant.
-    elif isinstance(instr, Number):
+    elif isinstance(instr, int):
         return instr
     # A conditional statement.
     elif instr[0]=="if":
@@ -79,6 +91,38 @@ def evaluate(instr, currentEnv):
         (_, test, conseq, alt) = instr
         exp = (conseq if evaluate(test, currentEnv) else alt)
         return evaluate(exp, currentEnv)
+    elif instr[0]=="cond2":
+        # Get a tuple with the required params.
+        (_, cond, cond2, t, tproc) = instr
+        cond = (cond[1] if evaluate(cond[0], currentEnv) else None)
+        cond2 = (cond2[1] if evaluate(cond2[0], currentEnv) else None)
+
+        # Check if T is equal to cond or cond2.
+        val_t = evaluate(t, currentEnv)
+        if cond!=val_t and cond2!=val_t:
+            return evaluate(tproc, currentEnv)
+        elif cond!=None:
+            return cond
+        elif cond2!=None:
+            return cond2
+    elif instr[0]=="cond3":
+        # Get a tuple with the required params.
+        (_, cond, cond2, cond3, t, tproc) = instr
+        cond = (cond[1] if evaluate(cond[0], currentEnv) else None)
+        cond2 = (cond2[1] if evaluate(cond2[0], currentEnv) else None)
+        cond3 = (cond3[1] if evaluate(cond3[0], currentEnv) else None)
+
+        # Check if T is equal to cond or cond2.
+        val_t = evaluate(t, currentEnv)
+        if cond!=val_t and cond2!=val_t and cond3!=val_t:
+            return evaluate(tproc, currentEnv)
+        elif cond!=None:
+            return cond
+        elif cond2!=None:
+            return cond2
+        elif cond3!=None:
+            return cond3
+
     # Defines a variable on the current environment.
     elif instr[0]=="def":
         (_, var, exp) = instr
@@ -87,6 +131,8 @@ def evaluate(instr, currentEnv):
     elif instr[0] == 'lambda':
         (_, params, body) = instr
         return Procedure(params, body, currentEnv)
+    elif isinstance(instr, list) and len(instr)==1:
+        return evaluate(instr[0], currentEnv)
     else:
         # Existing process that needs to be run. Get process and arguments, then return.
         proc = evaluate(instr[0], currentEnv)
@@ -97,16 +143,6 @@ def evaluate(instr, currentEnv):
 def tokenize(script):
     # Use a char hack to split the string into bracket operations.
     return script.replace('(', ' ( ').replace(')', ' ) ').replace('\n', '').replace('\t', '').strip().split()
-
-# "Atomizes" the given token, to convert from all symbols to numbers and symbols.
-def atomize(token):
-    try:
-        return int(token)
-    except ValueError:
-        try:
-            return float(token)
-        except ValueError:
-            return token
 
 # Parses the given set of tokens into instructions.
 def tokenparse(tokens):
@@ -135,6 +171,7 @@ def tokenparse(tokens):
 def parsePollenLine(script):
     # Tokenizing the pollen script.
     tokens = tokenize(script)
+    print(tokens)
 
     # Parsing the tokens.
     parsed = tokenparse(tokens)
@@ -175,9 +212,13 @@ def parsePollen(script):
 
 print(parsePollen("""
 # You gotta end comments with a semi;
-(def square (lambda (x) (* x x)));
-(def mod_sq (lambda (x y) (% (square x) y)));
-(mod_sq 4 5);
+(cond3
+((= 1 2) 3)
+((= 1 5) 2)
+((= 1 1) 7)
+(7)
+(+ 2 1)
+);
 """))
 
 #### END POLLEN INTERPRETER ####
