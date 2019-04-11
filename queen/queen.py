@@ -71,8 +71,9 @@ while True:
     if button_b.is_pressed():
         if len(clients) > 0:
             primesToTest = delegatePrimes(MAX_PRIME)
-            for client in clients:
-                radio.send(client + " testPrime " + primesToTest)
+            for i, client in enumerate(clients):
+                primesToTestStr = [str(n) for n in primesToTest[i]]
+                radio.send(client + " testPrime " + primesToTestStr)
 
     # Parsing any responses
     received = radio.receive()
