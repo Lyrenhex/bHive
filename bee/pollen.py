@@ -21,6 +21,7 @@ def getStandardEnvironment():
         '<=': ops.le,
         '>=': ops.ge,
         '=': ops.eq,
+        'rem': ops.mod,
         'true': True,
         'false': False,
         'abs': abs,
@@ -38,6 +39,7 @@ def getStandardEnvironment():
 def initStdLib():
     parsePollen(
         """
+        
         """
     )
 
@@ -211,14 +213,7 @@ def parsePollen(script):
     return parsePollenLine(lines[-1])
 
 print(parsePollen("""
-# You gotta end comments with a semi;
-(cond3
-((= 1 2) 3)
-((= 1 5) 2)
-((= 1 1) 7)
-(7)
-(+ 2 1)
-);
+
 """))
 
 #### END POLLEN INTERPRETER ####
