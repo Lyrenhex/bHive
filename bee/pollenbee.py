@@ -1,3 +1,27 @@
+## THIS FILE IS MINIFIED TO KEEP BYTES UNDER 8188. APOLOGIES.
+## SEE CLIENT CODE (COMMENTED) IN MB-B.PY
+
+# Function to send computed function response to Queen, using comms schema
+def sendResponse(procName, *responses):
+    resp = procName + " " + macAddr
+    for val in responses:
+        resp += " " + str(val)
+    radio.send(resp)
+
+# Sends an error
+def sendError(errNum, errMessage):
+    radio.send("err " + str(errNum) + " " + str(errMessage))
+
+# Holds the worker
+def hold(*args):
+    heldByQueen = True
+    return heldByQueen
+
+# Releases the worker
+def release(*args):
+    heldByQueen = False
+    return heldByQueen
+
 ########################
 ## POLLEN INTERPRETER ##
 ########################
@@ -85,21 +109,20 @@ def evaluate(instr, currentEnv):
         (_, test, conseq, alt) = instr
         exp = (conseq if evaluate(test, currentEnv) else alt)
         return evaluate(exp, currentEnv)
-    elif instr[0]=="cond2":
+    elif instr[0]=="cond":
         # Get a tuple with the required params.
-        (_, cond, cond2, t, tproc) = instr
-        cond = (cond[1] if evaluate(cond[0], currentEnv) else None)
-        cond2 = (cond2[1] if evaluate(cond2[0], currentEnv) else None)
+        (_, t, tproc) = instr
+        conds = instr[3:]
 
-        # Check if T is equal to cond or cond2.
+        # TVAL for checking is equal to cond or cond2.
         val_t = evaluate(t, currentEnv)
-        if cond!=val_t and cond2!=val_t:
-            return evaluate(tproc, currentEnv)
-        elif cond!=None:
-            return cond
-        elif cond2!=None:
-            return cond2
 
+        for cond in conds:
+            check = (cond[1] if evaluate(cond[0], currentEnv) else None)
+            if (check==val_t):
+                return evaluate(tproc, currentEnv)
+            elif check!=None:
+                return check
     # Defines a variable on the current environment.
     elif instr[0]=="def":
         (_, var, exp) = instr
@@ -172,9 +195,6 @@ def parsePollen(script):
 
     # Splitting string by ";".
     lines = script.split(";")
-
-    # Remove any lines beginning with comment characters.
-    # Removing all \ns from lines, deleting blank ones.
     for index, line in enumerate(lines):
         lines[index] = line.replace("\n", "")
         if line=="" or line.count(" ") == len(line):
@@ -191,3 +211,62 @@ def parsePollen(script):
     return parsePollenLine(lines[-1])
 
 #### END POLLEN INTERPRETER ####
+
+from microbit import *
+import machine
+import random
+import radio
+
+GROUP = 1
+ALLOWED_FUNCS = [
+    "sum",
+    "testPrime",
+    "release",
+    "hold",
+    "spyRSA",
+    "getNFactor_RSA",
+    "getD_RSA",
+    "execPollen"
+]
+
+macAddr = machine.unique_id()
+macAddr = '{:02x}{:02x}{:02x}{:02x}'.format(macAddr[0], macAddr[1], macAddr[2], macAddr[3])
+heldByQueen = False
+
+primeNumList = []
+
+def resetRadio():
+    radio.on()
+    radio.config(channel=7, group=GROUP)
+resetRadio()
+display.on()
+
+
+def startProcess():
+    display.show(Image.SQUARE_SMALL)
+def endProcess():
+    display.clear()
+
+while True:
+    if heldByQueen:
+        display.show("H")
+    else:
+        display.clear()
+    recv = radio.receive()
+    if recv is not None:
+        params = str(recv).split(" ")
+        if params[0] == "ping":
+            if not heldByQueen:
+                radio.send("pong " + macAddr)
+        elif params[0] == macAddr:
+            if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
+                startProcess()
+                response = locals()[params[1]](*params[2:])
+                endProcess()
+                if response is not None:
+                    if type(response) is tuple or type(response) is list:
+                        response = [str(item) for item in response]
+                        response = " ".join(response)
+                    sendResponse(params[1], response)
+            else:
+                sendError(2, "Invalid function '" + params[1] + "'")

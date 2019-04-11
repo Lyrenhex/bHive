@@ -2,6 +2,7 @@ from microbit import *
 import machine
 import random
 import radio
+import pollen
 
 GROUP = 1
 ALLOWED_FUNCS = [
@@ -81,7 +82,7 @@ def testEValue(d, n, e):
     if d*e == 1%n:
         return True
     return False
-    
+
 
 # Function to send computed function response to Queen, using comms schema
 def sendResponse(procName, *responses):
@@ -192,7 +193,6 @@ while True:
         # Check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
-                sleep(1000)
 
                 # Compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
@@ -205,6 +205,5 @@ while True:
                         response = [str(item) for item in response]
                         response = " ".join(response)
                     sendResponse(params[1], response)
-                    sleep(10000)
             else:
                 sendError(2, "Invalid function '" + params[1] + "'")
