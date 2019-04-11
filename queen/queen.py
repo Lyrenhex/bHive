@@ -16,7 +16,6 @@ clients = []
 
 primes = []
 
-isOccupied = False
 isPolling = False
 pollTime = 0
 active = ""
@@ -82,7 +81,6 @@ def parseReceived(input):
         if (params[1] in clients):
             clients.remove(params[1])
     elif params[0] == "testPrime":
-        isOccupied = False
         for prime in params[2:]:
             primes.append(int(prime))
         display.scroll(" ".join([str(n) for n in primes]))
@@ -122,8 +120,10 @@ while True:
         pollTime = 0
 
     if active == "prime" and not isPolling:
+        active = ""
         if len(clients) > 0:
             primesToTest = delegatePrimes()
+            j = 0
             for i, client in enumerate(clients):
                 primesToTestList = [str(n) for n in primesToTest[i]]
                 primesToTestStr = " ".join(primesToTestList)
