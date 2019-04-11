@@ -1,5 +1,6 @@
 from microbit import *
 import radio
+import utime
 import os
 
 MAX_PRIME = 100
@@ -11,6 +12,13 @@ clients = []
 primes = []
 
 isOccupied = False
+global isPolling, pollTime
+isPolling = False
+pollTime = 0
+spyActive = False
+
+nextChannel = 7
+channel7Sent = False
 
 # Enabling the display and radio
 display.on()
@@ -33,12 +41,21 @@ def delegatePrimes():
 
     return delegatedPrimes
 
+def getChannel():
+    if nextChannel == 7 and not channel7Sent:
+        nextChannel = 0
+        channel7Sent = True
+        return 7
+    elif nextChannel == 7:
+        nextChannel = 8
+    nextChannel += 1
+    return nextChannel - 1
+
 # Parses errors sent through
 def handleError(code, message):
     display.show("E"+str(code), wait=False)
     sleep(2000)
     display.scroll(message)
-
 
 # Removes all clients
 def releaseAllClients():
@@ -69,6 +86,14 @@ def parseReceived(input):
         isOccupied = False
         for prime in params[2:]:
             primes.append(int(prime))
+    elif params[0] == "spyRSA":
+        display.scroll(params[2:])
+        if bool(params[2]):
+            data = " ".join(params[3:])
+            display.scroll(data)
+        else:
+            display.show('X')
+            sleep(1000)
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
@@ -76,8 +101,30 @@ def parseReceived(input):
 # Constantly sending worker_request
 while True:
     # Casting to check for clients
-    if button_a.is_pressed():
+    if button_a.is_pressed() and not isPolling:
         radio.send("ping")
+        isPolling = True
+        spyActive = True
+        pollTime = 0
+        getWorkers()
+    
+    if isPolling:
+        sleep(1) # sleep 1 ms
+        pollTime += 1
+        if pollTime >= 200:
+            isPolling = False
+            pollTime = 0
+    
+    if spyActive:
+        if isReady():
+            t = "A"
+        display.show(t)
+
+    if spyActive and isReady():
+        display.scroll(" spyRSA " + str(getChannel()) + " 20")
+        for client in clients:
+            radio.send(client + " spyRSA " + str(getChannel()) + " 20000")
+        spyActive = False
 
     if button_b.is_pressed() and not isOccupied:
         isOccupied = True

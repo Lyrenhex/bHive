@@ -8,6 +8,7 @@ Server to Client Requests:
 [Unique Microbit ID]	sum							[num1] [num2] [num3] ...
 [Unique Microbit ID]	hold
 [Unique Microbit ID]	release
+[Unique Microbit ID]    spy                         [channel num] [ttl]
 
 Error responses
 err 					[error code] 				[error message]
