@@ -6,7 +6,7 @@ import os
 global isPolling
 global pollTime
 
-MAX_PRIME = 100
+MAX_PRIME = 20
 MIN_PRIME = 2
 
 nextChannel = (7, False)
@@ -86,8 +86,8 @@ def parseReceived(input):
         display.scroll(" ".join([str(n) for n in primes]))
     elif params[0] == "spyRSA":
         if params[2] == "True":
-            data = " ".join(params[3:])
-            display.scroll(data)
+            display.scroll(" ".join(params[3:]))
+            
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
@@ -128,7 +128,7 @@ while True:
                 primesToTestList = [str(n) for n in primesToTest[i]]
                 primesToTestStr = " ".join(primesToTestList)
                 radio.send(client + " testPrime " + primesToTestStr)
-
+                
     # Parsing any responses
     received = radio.receive()
     if received is not None:

@@ -3,11 +3,31 @@ A micro:bit MicroPython implementation of a random string sender for testing's s
 """
 
 from microbit import *
+import random
 import radio
 
 radio.on() 
 radio.config() 
 
+primes = [2, 3, 5, 7, 11, 13, 17, 19]
+
+e = random.choice(primes)
 while True:
-    radio.send("This is a random test message.")
+    p = random.choice(primes)
+    if p % e != -1:
+        break
+    
+while True:
+    q = random.choice(primes)
+    if q % e != -1:
+        break
+
+n = p * q
+e = str(e)
+n = str(n)
+
+d = (e ** -1.0) % ((p-1) * (q - 1))
+
+while True:
+    radio.send(e + " " + n + " " + d)
     sleep(500)
