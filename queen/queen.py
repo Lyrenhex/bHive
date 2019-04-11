@@ -55,11 +55,11 @@ def parseReceived(input):
         # Remove client from list
         if (params[1] in clients):
             clients.remove(params[1])
-    elif params[0] == "prime":
-        display.show(int(bool(params[2])))
-        if bool(params[2]):
-            primes.append(int(params[3]))
-            display.show(params[3])
+    elif params[0] == "testPrime":
+        for prime in params[2:]:
+            primes.append(int(prime))
+            display.show(prime)
+            sleep(1000)
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
