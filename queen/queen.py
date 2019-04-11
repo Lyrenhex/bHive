@@ -19,7 +19,7 @@ primes = []
 isOccupied = False
 isPolling = False
 pollTime = 0
-spyActive = False
+active = ""
 
 # Enabling the display and radio
 display.on()
@@ -85,6 +85,7 @@ def parseReceived(input):
         isOccupied = False
         for prime in params[2:]:
             primes.append(int(prime))
+        display.scroll(" ".join([str(n) for n in primes]))
     elif params[0] == "spyRSA":
         if params[2] == "True":
             data = " ".join(params[3:])
@@ -99,7 +100,7 @@ while True:
     if button_a.is_pressed() and not isPolling:
         radio.send("ping")
         isPolling = True
-        spyActive = True
+        active = "spy"
         pollTime = 0
     
     if isPolling:
@@ -109,13 +110,18 @@ while True:
             isPolling = False
             pollTime = 0
 
-    if spyActive and not isPolling:
+    if active == "spy" and not isPolling:
         for i, client in enumerate(clients):
             radio.send(client + " spyRSA " + str(getChannel(i)) + " 20000")
-        spyActive = False
+        active = ""
 
-    if button_b.is_pressed() and not isOccupied:
-        isOccupied = True
+    if button_b.is_pressed() and not isPolling:
+        radio.send("ping")
+        isPolling = True
+        active = "prime"
+        pollTime = 0
+
+    if active == "prime" and not isPolling:
         if len(clients) > 0:
             primesToTest = delegatePrimes()
             for i, client in enumerate(clients):
