@@ -69,8 +69,6 @@ def parseReceived(input):
         isOccupied = False
         for prime in params[2:]:
             primes.append(int(prime))
-            display.show(prime)
-            sleep(1000)
     # Handle error.
     elif params[0] == "err":
         handleError(params[1], " ".join(params[2:]))
