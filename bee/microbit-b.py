@@ -9,7 +9,9 @@ ALLOWED_FUNCS = [
     "testPrime",
     "release",
     "hold",
-    "spyRSA"
+    "spyRSA",
+    "getNFactor_RSA",
+    "getD_RSA"
 ]
 
 # Set up mac address-based unique id
@@ -60,8 +62,26 @@ def spyRSA(channelNum, requestedRunTime):
         runtime += 1
         sleep(1)
 
-#def getQP_RSA(n, *primes):
+# Get one of the factors of N by modulus.
+def getNFactors_RSA(n, *primes):
+    for prime in primes:
+        if n % prime == 0:
+            return (prime, n/prime)
+    return None
 
+# Find D with a given list of P, Q and various E values.
+def getD_RSA(p, q, *e_vals):
+    for e in e_vals:
+        d = (e**-1.0) % (p-1)*(q-1)
+        if testEValue(d, p*q, e):
+            return d
+
+# JUSTINCASE: Test different values of E.
+def testEValue(d, n, e):
+    if d*e == 1%n:
+        return True
+    return False
+    
 
 # Function to send computed function response to Queen, using comms schema
 def sendResponse(procName, *responses):

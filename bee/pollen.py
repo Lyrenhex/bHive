@@ -212,8 +212,4 @@ def parsePollen(script):
     # Returning last.
     return parsePollenLine(lines[-1])
 
-print(parsePollen("""
-
-"""))
-
 #### END POLLEN INTERPRETER ####
