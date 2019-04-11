@@ -3,6 +3,7 @@ import radio
 import os
 
 MAX_PRIME = 100
+MIN_PRIME = 2
 
 # List of IDs of all clients
 clients = []
@@ -18,11 +19,18 @@ radio.on()
 # Configuring the radio for group 1
 radio.config(group=1)
 
-def delegatePrimes(MAX_PRIME):
-    primesPerWorker = (MAX_PRIME - 2) // len(clients)
-    delegatedPrimes = [[n * primesPerWorker, primesPerWorker] for n in range(len(clients))]
-    if primesPerWorker * len(clients) < MAX_PRIME:
-        delegatedPrimes[-1][1] += MAX_PRIME - (primesPerWorker * len(clients))
+def delegatePrimes():
+    primesToCheck = MAX_PRIME - MIN_PRIME
+    testsPerClient = primesToCheck // len(clients)
+    delegatedPrimes = []
+    i = MIN_PRIME
+    for client in clients:
+        primeRange = [i, testsPerClient]
+        i += testsPerClient + 1
+        delegatedPrimes.append(primeRange)
+    diff = (delegatedPrimes[-1][0] + delegatedPrimes[-1][1]) - MAX_PRIME
+    delegatedPrimes[-1][1] -= diff
+
     return delegatedPrimes
 
 # Parses errors sent through
@@ -76,7 +84,7 @@ while True:
     if button_b.is_pressed() and not isOccupied:
         isOccupied = True
         if len(clients) > 0:
-            primesToTest = delegatePrimes(MAX_PRIME)
+            primesToTest = delegatePrimes()
             for i, client in enumerate(clients):
                 primesToTestList = [str(n) for n in primesToTest[i]]
                 primesToTestStr = " ".join(primesToTestList)
