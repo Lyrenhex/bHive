@@ -115,10 +115,11 @@ def rmTest(testStr, certainty):
     
     return True
 
-def testPrime(*primes):
+def testPrime(start, numberOfIterations):
     verifiedPrimes = []
-    for prime in primes:
-        prime = int(prime)
+    start = int(start)
+    for prime in range(int(numberOfIterations)):
+        prime = int(prime) + start
         if rmTest(prime, 5):
             verifiedPrimes.append(prime)
     return verifiedPrimes
