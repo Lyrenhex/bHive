@@ -25,7 +25,7 @@ primeNumList = []
 # Enable BLE and Display
 def resetRadio():
     radio.on()
-    radio.config(group=GROUP)
+    radio.config(channel=7, group=GROUP)
 resetRadio()
 display.on()
 
@@ -46,20 +46,14 @@ def endProcess():
 # Eavesdrops on the selected channel for a given amount of time.
 def spyRSA(channelNum, requestedRunTime):
     runtime = 0
-    radio.config(channel=int(channelNum)) 
-    display.show("S", wait=False)
-    sleep(1000)
+    radio.config(channel=int(channelNum), group=0) 
 
     while True:
         received = radio.receive()
         if received is not None:
-            display.show("T", wait=False)
-            sleep(1000)
             resetRadio()
             return (True, received)
         if runtime >= int(requestedRunTime):
-            display.show("F", wait=False)
-            sleep(1000)
             resetRadio()
             return False
 
@@ -178,7 +172,6 @@ while True:
         # Check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
-                display.show(params[1])
                 sleep(1000)
 
                 # Compute the task requested (and note that we're busy and haven't broken)
@@ -192,7 +185,6 @@ while True:
                         response = [str(item) for item in response]
                         response = " ".join(response)
                     sendResponse(params[1], response)
-                    display.show(response, wait=False)
                     sleep(10000)
             else:
                 sendError(2, "Invalid function '" + params[1] + "'")
