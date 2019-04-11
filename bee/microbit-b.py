@@ -8,7 +8,8 @@ ALLOWED_FUNCS = [
     "sum",
     "testPrime",
     "release",
-    "hold"
+    "hold",
+    "spyRSA"
 ]
 
 # Set up mac address-based unique id
@@ -22,8 +23,10 @@ heldByQueen = False
 primeNumList = []
 
 # Enable BLE and Display
-radio.on()
-radio.config(group=GROUP)
+def resetRadio():
+    radio.on()
+    radio.config(group=GROUP)
+resetRadio()
 display.on()
 
 
@@ -35,6 +38,35 @@ def startProcess():
 # Clears the screen when worker is not computing
 def endProcess():
     display.clear()
+
+############################
+## CLIENT TO SERVER FUNCS ##
+############################
+
+# Eavesdrops on the selected channel for a given amount of time.
+def spyRSA(channelNum, requestedRunTime):
+    runtime = 0
+    radio.config(channel=int(channelNum)) 
+    display.show("S", wait=False)
+    sleep(1000)
+
+    while True:
+        received = radio.receive()
+        if received is not None:
+            display.show("T", wait=False)
+            sleep(1000)
+            resetRadio()
+            return (True, received)
+        if runtime >= int(requestedRunTime):
+            display.show("F", wait=False)
+            sleep(1000)
+            resetRadio()
+            return False
+
+        runtime += 1
+        sleep(1)
+
+#def getQP_RSA(n, *primes):
 
 
 # Function to send computed function response to Queen, using comms schema
@@ -124,7 +156,7 @@ def testPrime(start, numberOfIterations):
             verifiedPrimes.append(prime)
     return verifiedPrimes
 
-# Main loop
+# Main loop :)
 while True:
     if heldByQueen:
         display.show("H")
@@ -146,6 +178,9 @@ while True:
         # Check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
+                display.show(params[1])
+                sleep(1000)
+
                 # Compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
@@ -157,5 +192,7 @@ while True:
                         response = [str(item) for item in response]
                         response = " ".join(response)
                     sendResponse(params[1], response)
+                    display.show(response, wait=False)
+                    sleep(10000)
             else:
                 sendError(2, "Invalid function '" + params[1] + "'")
