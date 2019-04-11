@@ -83,7 +83,7 @@ def rmTest(testStr, certainty):
     # filter out simple primes
     if testNum == 2 or testNum == 3:
         return True
-    if testNum < 2 or testNum % 2 == 0:
+    if testNum < 2 or testNum % 2 == 0 or testNum % 3 == 0:
         return False
     
     d = testNum - 1
@@ -122,6 +122,7 @@ def testPrime(start, numberOfIterations):
         prime = int(prime) + start
         if rmTest(prime, 5):
             verifiedPrimes.append(prime)
+    display.scroll(" ".join([str(n) for n in verifiedPrimes]))
     return verifiedPrimes
 
 # Main loop
