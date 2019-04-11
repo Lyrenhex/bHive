@@ -122,7 +122,6 @@ def testPrime(start, numberOfIterations):
         prime = int(prime) + start
         if rmTest(prime, 5):
             verifiedPrimes.append(prime)
-    display.scroll(" ".join([str(n) for n in verifiedPrimes]))
     return verifiedPrimes
 
 # Main loop
