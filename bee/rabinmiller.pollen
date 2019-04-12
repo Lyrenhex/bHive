@@ -1,0 +1,19 @@
+(def expmod (lambda (a p n)
+  (cond2 ((= p 0) 1)
+  ((= (rem p 2) 1)  (rem (* a (expmod a (- p 1) n)) n))
+  (true)
+  (rem ((lambda (x) (* x x)) (expmod a (/ p 2) n)) n))));
+
+# Will return true if n is prime, false otherwise;
+(def primep (lambda (n)  
+  (def helper (lambda (n times)
+  (def goodp (lambda (a) (= (expmod a (- n 1) n) 1)))
+  (cond2 ((= times 0) true)
+  ((goodp (+ (random (- n 3)) 2)) (helper n (- times 1)))
+  (true)
+  (nil))));
+  (cond3 ((member n '(29341 294409 410041 512461 65241793)) nil)
+  ((and (<= n 23) (member n '(2 3 5 7 11 13 17 19 23))) t)
+  ((< n 2) nil)
+  (true)
+  (helper n 20))));
