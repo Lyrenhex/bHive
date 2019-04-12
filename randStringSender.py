@@ -23,10 +23,12 @@ while True:
         break
 
 n = p * q
-e = str(e)
-n = str(n)
 
 d = (e ** -1.0) % ((p-1) * (q - 1))
+
+e = str(e)
+n = str(n)
+d = str(d)
 
 while True:
     radio.send(e + " " + n + " " + d)
