@@ -1,13 +1,14 @@
 Client to Server Responses:
-prime					[Unique Microbit ID]		boolean prime
+pong					[Unique Microbit ID]
+prime					[Unique Microbit ID]		[prime or not boolean] [number]
+sum						[Unique Microbit ID]		[sum]
 
 Server to Client Requests:
-check					[Unique Microbit ID]		int number
+[Unique Microbit ID]	testPrime					[number] [space delimited list of primes]
+[Unique Microbit ID]	sum							[num1] [num2] [num3] ...
+[Unique Microbit ID]	hold
+[Unique Microbit ID]	release
+[Unique Microbit ID]    spy                         [channel num] [ttl]
 
-FUNC RESPONSES
-[Procedure name]		[Unique Microbit ID]		[Space delimited list of responses]
-
-ERROR RESPONSE
+Error responses
 err 					[error code] 				[error message]
-
-This means "err" is a reserved keyword, DO NOT USE.
