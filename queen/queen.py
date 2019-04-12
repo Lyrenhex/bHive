@@ -6,7 +6,7 @@ import os
 global isPolling
 global pollTime
 
-MAX_PRIME = 20
+MAX_PRIME = 1000
 MIN_PRIME = 2
 
 nextChannel = (7, False)
