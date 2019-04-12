@@ -1,0 +1,14 @@
+Client to Server Responses:
+pong					[Unique Microbit ID]
+prime					[Unique Microbit ID]		[prime or not boolean] [number]
+sum						[Unique Microbit ID]		[sum]
+
+Server to Client Requests:
+[Unique Microbit ID]	testPrime					[number] [space delimited list of primes]
+[Unique Microbit ID]	sum							[num1] [num2] [num3] ...
+[Unique Microbit ID]	hold
+[Unique Microbit ID]	release
+[Unique Microbit ID]    spy                         [channel num] [ttl]
+
+Error responses
+err 					[error code] 				[error message]

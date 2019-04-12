@@ -2,14 +2,17 @@ from microbit import *
 import machine
 import random
 import radio
+import pollen
 
-# Define constants
 GROUP = 1
 ALLOWED_FUNCS = [
     "sum",
     "testPrime",
     "release",
-    "hold"
+    "hold",
+    "spyRSA",
+    "getNFactor_RSA",
+    "getD_RSA"
 ]
 
 # Set up mac address-based unique id
@@ -23,8 +26,10 @@ heldByQueen = False
 primeNumList = []
 
 # Enable BLE and Display
-radio.on()
-radio.config(group=GROUP)
+def resetRadio():
+    radio.on()
+    radio.config(channel=7, group=GROUP)
+resetRadio()
 display.on()
 
 
@@ -36,6 +41,47 @@ def startProcess():
 # Clears the screen when worker is not computing
 def endProcess():
     display.clear()
+
+############################
+## CLIENT TO SERVER FUNCS ##
+############################
+
+# Eavesdrops on the selected channel for a given amount of time.
+def spyRSA(channelNum, requestedRunTime):
+    runtime = 0
+    radio.config(channel=int(channelNum), group=0) 
+
+    while True:
+        received = radio.receive()
+        if received is not None:
+            resetRadio()
+            return (True, received)
+        if runtime >= int(requestedRunTime):
+            resetRadio()
+            return False
+
+        runtime += 1
+        sleep(1)
+
+# Get one of the factors of N by modulus.
+def getNFactors_RSA(n, *primes):
+    for prime in primes:
+        if n % prime == 0:
+            return (prime, n/prime)
+    return None
+
+# Find D with a given list of P, Q and various E values.
+def getD_RSA(p, q, *e_vals):
+    for e in e_vals:
+        d = (e**-1.0) % (p-1)*(q-1)
+        if testEValue(d, p*q, e):
+            return d
+
+# JUSTINCASE: Test different values of E.
+def testEValue(d, n, e):
+    if d*e == 1%n:
+        return True
+    return False
 
 
 # Function to send computed function response to Queen, using comms schema
@@ -84,7 +130,7 @@ def rmTest(testStr, certainty):
     # filter out simple primes
     if testNum == 2 or testNum == 3:
         return True
-    if testNum < 2 or testNum % 2 == 0:
+    if testNum < 2 or testNum % 2 == 0 or testNum % 3 == 0:
         return False
     
     d = testNum - 1
@@ -116,16 +162,22 @@ def rmTest(testStr, certainty):
     
     return True
 
-def testPrime(*primes):
+def testPrime(start, numberOfIterations):
     verifiedPrimes = []
-    for prime in primes:
-        prime = int(prime)
+    start = int(start)
+    for prime in range(int(numberOfIterations)):
+        prime = int(prime) + start
         if rmTest(prime, 5):
             verifiedPrimes.append(prime)
     return verifiedPrimes
 
-# Main loop
+# Main loop :)
 while True:
+    if heldByQueen:
+        display.show("H")
+    else:
+        display.clear()
+
     # Keep polling BLE for data
     recv = radio.receive()
     # If not empty
@@ -141,6 +193,7 @@ while True:
         # Check that the instruction is intended for us
         elif params[0] == macAddr:
             if (params[1] in locals()) and (params[1] in ALLOWED_FUNCS):
+
                 # Compute the task requested (and note that we're busy and haven't broken)
                 startProcess()
                 response = locals()[params[1]](*params[2:])
